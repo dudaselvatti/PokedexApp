@@ -1,21 +1,29 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import { Pokemon } from '../types/Pokemon';
-import { capitalize } from '../utils/format'; // Importando a função!
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Pokemon, RootStackParamList } from '../types/Pokemon';
+import { capitalize } from '../utils/format';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
 interface Props {
   pokemon: Pokemon;
 }
 
 export const PokemonCard = ({ pokemon }: Props) => {
+  const navigation = useNavigation<NavigationProp>();
+
+  // dispara quando clica
+  const handlePress = () => {
+    navigation.navigate('Details', { pokemon });
+  };
+
   return (
-    <View style={styles.card}>
-      {/* Adicionei o {uri: pokemon.image} que estava faltando no seu código base lá do início */}
+    <TouchableOpacity style={styles.card} onPress={handlePress} activeOpacity={0.7}>
       <Image source={{ uri: pokemon.image }} style={styles.image} />
-      
-      {/* Usando a função capitalize para formatar o nome */}
       <Text style={styles.name}>{capitalize(pokemon.name)}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 
