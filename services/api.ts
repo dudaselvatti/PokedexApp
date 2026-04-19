@@ -4,9 +4,11 @@ import { Pokemon, PokemonListItem } from '../types/Pokemon';
 const API_BASE = 'https://pokeapi.co/api/v2';
 //const API_BASE = 'https://pokeapi.co/apiERRADA/v2'; //pra erro testar errros a de cima eh o certo ta bom
 
-export async function getPokemons(limit: number): Promise<PokemonListItem[]> {
+// Adicionamos o offset com um valor padrão de 0
+export async function getPokemons(limit: number, offset: number = 0): Promise<PokemonListItem[]> {
   try {
-    const res = await axios.get(`${API_BASE}/pokemon?limit=${limit}`);
+    // A URL agora recebe o offset
+    const res = await axios.get(`${API_BASE}/pokemon?limit=${limit}&offset=${offset}`);
     return res.data.results;
   } catch (error) {
     console.error("Erro ao buscar a lista de Pokémons:", error);
@@ -25,7 +27,7 @@ export async function getPokemonDetails(url: string): Promise<Pokemon> {
       types: res.data.types.map((t: any) => t.type.name),
     };
   } catch (error) {
-    console.error(`Erro ao buscar detalhes na URL ${url}:`, error);
+    console.error(`Erro ao buscar detalhes na URL ${url}:, error`);
     throw new Error("Não foi possível carregar os detalhes do Pokémon.");
   }
 }
