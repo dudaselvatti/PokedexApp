@@ -10,7 +10,7 @@ export const PokedexScreen = () => {
   
   // estado de carregamento
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  // estado de erro (NOVO)
+  // estado de erro
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -40,6 +40,29 @@ export const PokedexScreen = () => {
 
   const filtered = pokemons.filter(p => p.name.includes(search.toLowerCase()));
 
+  // renderizar as mensagens quando a lista está vazia
+  const renderEmptyList = () => {
+    // digitou algo e nao achou
+    if (search.trim() !== '') {
+      return (
+        <View style={styles.center}>
+          <Text style={styles.emptyText}>
+            Nenhum Pokémon encontrado para '{search}'
+          </Text>
+        </View>
+      );
+    }
+
+    // sem busca lista vazia 
+    return (
+      <View style={styles.center}>
+        <Text style={styles.emptyText}>
+          Nenhum Pokémon para exibir no momento.
+        </Text>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Pokédex</Text>
@@ -66,6 +89,12 @@ export const PokedexScreen = () => {
           keyExtractor={item => item.id.toString()}
           numColumns={2}
           renderItem={({ item }) => <PokemonCard pokemon={item} />}
+          
+          // tratamento de lista vazia
+          ListEmptyComponent={renderEmptyList}
+
+          // garantir que a lista ocupe o espaço todo e o texto vazio fique centralizado na tela
+          contentContainerStyle={filtered.length === 0 ? { flex: 1 } : null}
         />
       )}
     </View>
@@ -99,5 +128,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 20,
     fontWeight: 'bold',
+  },
+  // style para o texto de lista vazia
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
 });
