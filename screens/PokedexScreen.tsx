@@ -10,17 +10,29 @@ export const PokedexScreen = () => {
   
   // estado de carregamento
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  // estado de erro (NOVO)
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true); // pra começar ja carregando
-      //pra tirar o delay apague a linha abaixo
-      await new Promise(resolve => setTimeout(resolve, 2000)); // simula um delay de 2 segundos pra verificar se ta funcionando o loading
-      const list = await getPokemons(30); 
-      const details = await Promise.all(list.map(p => getPokemonDetails(p.url)));
-      
-      setPokemons(details);
-      setIsLoading(false); // para de loadar quando os dados chegam
+      try {
+        setIsLoading(true); // pra começar ja carregando
+        setError(null); // limpa qualquer erro que tenha ficado salvo
+
+        //pra tirar o delay apague a linha abaixo
+        await new Promise(resolve => setTimeout(resolve, 2000)); // simula um delay de 2 segundos pra verificar se ta funcionando o loading
+        
+        const list = await getPokemons(30); 
+        const details = await Promise.all(list.map(p => getPokemonDetails(p.url)));
+        
+        setPokemons(details);
+      } catch (err) {
+        // se der pau na requisição, ele cai aqui
+        setError("Falha ao carregar Pokémons. Verifique sua conexão.");
+      } finally {
+        //executa dando certo ou errado, garantindo que o loading suma
+        setIsLoading(false); // para de loadar quando os dados chegam ou falham
+      }
     };
     
     fetchData();
@@ -38,11 +50,15 @@ export const PokedexScreen = () => {
         onChangeText={setSearch}
       />
 
-      {/*if dos loads*/}
+      {/*if dos loads e erros*/}
       {isLoading ? (
         <View style={styles.center}>
           <ActivityIndicator size="large" color="#0000ff" />
           <Text style={styles.loadingText}>Carregando Pokémons...</Text>
+        </View>
+      ) : error ? (
+        <View style={styles.center}>
+          <Text style={styles.errorText}>{error}</Text>
         </View>
       ) : (
         <FlatList
@@ -75,5 +91,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 16,
     color: '#666',
+  },
+  // style pro texto de erro 
+  errorText: {
+    color: '#D8000C',
+    fontSize: 16,
+    textAlign: 'center',
+    padding: 20,
+    fontWeight: 'bold',
   },
 });
