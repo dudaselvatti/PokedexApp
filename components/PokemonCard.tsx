@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { Pokemon } from '../types/Pokemon';
+import { capitalize } from '../utils/format'; // Importando a função!
 
 interface Props {
   pokemon: Pokemon;
@@ -9,8 +10,11 @@ interface Props {
 export const PokemonCard = ({ pokemon }: Props) => {
   return (
     <View style={styles.card}>
+      {/* Adicionei o {uri: pokemon.image} que estava faltando no seu código base lá do início */}
       <Image source={{ uri: pokemon.image }} style={styles.image} />
-      <Text style={styles.name}>{pokemon.name}</Text>
+      
+      {/* Usando a função capitalize para formatar o nome */}
+      <Text style={styles.name}>{capitalize(pokemon.name)}</Text>
     </View>
   );
 };

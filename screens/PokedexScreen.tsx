@@ -3,10 +3,12 @@ import { View, Text, FlatList, TextInput, StyleSheet, ActivityIndicator } from '
 import { getPokemons, getPokemonDetails } from '../services/api';
 import { Pokemon } from '../types/Pokemon';
 import { PokemonCard } from '../components/PokemonCard';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const LIMIT = 30; // Constante para controlar quantos pokémons vêm por vez
 
 export const PokedexScreen = () => {
+  const insets = useSafeAreaInsets();
   const [pokemons, setPokemons] = useState<Pokemon[]>([]);
   const [search, setSearch] = useState('');
   
@@ -106,7 +108,7 @@ export const PokedexScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top + 16 }]}>
       <Text style={styles.title}>Pokédex</Text>
 
       <TextInput
@@ -149,7 +151,7 @@ export const PokedexScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 60, paddingHorizontal: 16 },
+  container: { flex: 1, paddingHorizontal: 16 },
   title: { fontSize: 32, fontWeight: 'bold', marginBottom: 12 },
   input: {
     backgroundColor: '#f1f1f1',
